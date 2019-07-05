@@ -25,7 +25,7 @@ EXTENSION(html2pdf) {
     HPDF_BYTE *buf = NULL;
     if (PG_ARGISNULL(0)) ereport(ERROR, (errmsg("html is null!")));
     html = TextDatumGetCString(PG_GETARG_DATUM(0));
-    if (!(pdf = HPDF_New(error_handler, NULL))) ereport(ERROR, (errmsg("!pdf")));
+    if (!(pdf = HPDF_NewEx(error_handler, (HPDF_Alloc_Func)palloc, pfree, 0, NULL))) ereport(ERROR, (errmsg("!pdf")));
     if (HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL) != HPDF_OK) goto HPDF_Free;
     if (HPDF_UseUTFEncodings(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(page = HPDF_AddPage(pdf))) goto HPDF_Free;
