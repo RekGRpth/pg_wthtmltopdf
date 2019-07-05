@@ -48,7 +48,6 @@ HPDF_Free:
     if (page) while (HPDF_Page_GetGStateDepth(page) > 1) HPDF_Page_GRestore(page);
     (void)HPDF_Free(pdf);
     (void)pfree(html);
-    PG_RETURN_TEXT_P(cstring_to_text_with_len((const char *)buf, size));
     t = cstring_to_text_with_len((const char *)buf, size);
     pq_begintypsend(&sid);
     pq_sendtext(&sid, VARDATA_ANY(t), VARSIZE_ANY_EXHDR(t));
