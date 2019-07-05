@@ -13,6 +13,10 @@ static void HPDF_STDCALL error_handler(HPDF_STATUS error_no, HPDF_STATUS detail_
     ereport(ERROR, (errmsg("libharu: error_no=%04X, detail_no=%d\n", (unsigned int) error_no, (int) detail_no)));
 }
 
+static void error(const char *msg) {
+    ereport(ERROR, (errmsg(msg)));
+}
+
 EXTENSION(html2pdf) {
     bytea *html;
     HPDF_Doc pdf;
@@ -26,7 +30,7 @@ EXTENSION(html2pdf) {
     if (HPDF_UseUTFEncodings(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(page = HPDF_AddPage(pdf))) goto HPDF_Free;
     if (HPDF_Page_SetSize(page, HPDF_PAGE_SIZE_A4, HPDF_PAGE_PORTRAIT) != HPDF_OK) goto HPDF_Free;
-    if (!MyWPdfRenderer_render(pdf, page, (const char *)html)) goto HPDF_Free;
+    if (!MyWPdfRenderer_render(error, pdf, page, (const char *)html)) goto HPDF_Free;
     if (HPDF_SaveToStream(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(size = HPDF_GetStreamSize(pdf))) goto HPDF_Free;
     if (!(buf = palloc(size))) goto HPDF_Free;

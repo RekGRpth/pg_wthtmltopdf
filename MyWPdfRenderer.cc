@@ -1,6 +1,5 @@
 #include <Wt/Render/WPdfRenderer.h>
 #include "MyWPdfRenderer.h"
-#include <postgres.h>
 
 namespace Wt { namespace rapidxml {
 class parse_error: public std::exception {
@@ -19,7 +18,7 @@ private:
 }}
 
 extern "C" {
-    bool MyWPdfRenderer_render(HPDF_Doc pdf, HPDF_Page page, const char *html) {
+    bool MyWPdfRenderer_render(MyWPdfRenderer_error error, HPDF_Doc pdf, HPDF_Page page, const char *html) {
         try {
             Wt::Render::WPdfRenderer renderer(pdf, page);
             renderer.setMargin(1.0);
@@ -27,11 +26,15 @@ extern "C" {
             renderer.render(html);
             return true;
         } catch (const Wt::rapidxml::parse_error &e) {
-            ereport(ERROR, (errmsg("wt exception: what = %s, where = %s", e.what(), e.where<char>())));
+            char msg[200];
+            snprintf(msg, 200, "wt exception: what = %s, where = %s", e.what(), e.where<char>());
+            error(msg);
         } catch (const std::exception &e) {
-            ereport(ERROR, (errmsg("wt exception: what = %s", e.what())));
+            char msg[200];
+            snprintf(msg, 200, "wt exception: what = %s", e.what());
+            error(msg);
         } catch (...) {
-            ereport(ERROR, (errmsg("wt exception")));
+            error("wt exception");
         }
         return false;
     }

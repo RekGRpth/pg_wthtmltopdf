@@ -7,7 +7,8 @@ extern "C" {
 
 #include <hpdf.h>
 
-bool MyWPdfRenderer_render(HPDF_Doc pdf, HPDF_Page page, const char *html);
+typedef void (MyWPdfRenderer_error)(const char *msg);
+bool MyWPdfRenderer_render(MyWPdfRenderer_error error, HPDF_Doc pdf, HPDF_Page page, const char *html);
 
 #ifdef __cplusplus
 }
