@@ -30,7 +30,7 @@ EXTENSION(html2pdf) {
     if (HPDF_UseUTFEncodings(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(page = HPDF_AddPage(pdf))) goto HPDF_Free;
     if (HPDF_Page_SetSize(page, HPDF_PAGE_SIZE_A4, HPDF_PAGE_PORTRAIT) != HPDF_OK) goto HPDF_Free;
-    if (!MyWPdfRenderer_render(error, pdf, page, (const char *)html)) goto HPDF_Free;
+    if (!MyWPdfRenderer_render(error, pdf, page, html)) goto HPDF_Free;
     if (HPDF_SaveToStream(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(size = HPDF_GetStreamSize(pdf))) goto HPDF_Free;
     elog(LOG, "size = %u", size);
