@@ -48,7 +48,7 @@ HPDF_Free:
     if (page) while (HPDF_Page_GetGStateDepth(page) > 1) HPDF_Page_GRestore(page);
     (void)HPDF_Free(pdf);
     (void)pfree(html);
-    elog(LOG, "buf = %*.*s", size, size, (const char *)buf);
+//    elog(LOG, "buf = %*.*s", size, size, (const char *)buf);
     elog(LOG, "strlen(buf) = %lu", strlen((const char *)buf));
     elog(LOG, "size = %u", size);
 //    PG_RETURN_TEXT_P(cstring_to_text_with_len((const char *)buf, size));
