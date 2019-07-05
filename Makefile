@@ -11,4 +11,4 @@ SHLIB_LINK := $(LIBS)
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 
-$(OBJS): MyWPdfRenderer.h
+$(OBJS): MyWPdfRenderer.h Makefile
