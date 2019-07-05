@@ -1,5 +1,6 @@
 #include <Wt/Render/WPdfRenderer.h>
 #include "MyWPdfRenderer.h"
+#include <postgres.h>
 
 namespace Wt { namespace rapidxml {
 class parse_error: public std::exception {
