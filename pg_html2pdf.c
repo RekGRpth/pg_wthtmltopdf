@@ -33,7 +33,7 @@ EXTENSION(html2pdf) {
     if (!MyWPdfRenderer_render(error, pdf, page, html)) goto HPDF_Free;
     if (HPDF_SaveToStream(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(size = HPDF_GetStreamSize(pdf))) goto HPDF_Free;
-    elog(LOG, "size = %u", size);
+//    elog(LOG, "size = %u", size);
     if (!(buf = palloc(size))) goto HPDF_Free;
     switch (HPDF_ReadFromStream(pdf, buf, &size)) {
         case HPDF_OK: break;
@@ -45,8 +45,9 @@ HPDF_Free:
     if (page) while (HPDF_Page_GetGStateDepth(page) > 1) HPDF_Page_GRestore(page);
     (void)HPDF_Free(pdf);
     (void)pfree(html);
-    elog(LOG, "strlen(buf) = %lu", strlen((const char *)buf));
-    elog(LOG, "size = %u", size);
-//    PG_RETURN_TEXT_P(cstring_to_text_with_len((const char *)buf, size));
-    return CStringGetTextDatum((const char *)buf);
+//    elog(LOG, "buf = %s", (const char *)buf + strlen((const char *)buf) + 1);
+//    elog(LOG, "strlen(buf) = %lu", strlen((const char *)buf));
+//    elog(LOG, "size = %u", size);
+    PG_RETURN_TEXT_P(cstring_to_text_with_len((const char *)buf, size));
+//    return CStringGetTextDatum((const char *)buf);
 }
