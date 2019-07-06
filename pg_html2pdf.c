@@ -32,12 +32,12 @@ EXTENSION(html2pdf) {
     if (HPDF_UseUTFEncodings(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(page = HPDF_AddPage(pdf))) goto HPDF_Free;
     if (HPDF_Page_SetSize(page, HPDF_PAGE_SIZE_A4, HPDF_PAGE_PORTRAIT) != HPDF_OK) goto HPDF_Free;
-    if (!MyWPdfRenderer_render(error, pdf, page, VARDATA(html))) goto HPDF_Free;
+    if (!MyWPdfRenderer_render(error, pdf, page, VARDATA_ANY(html))) goto HPDF_Free;
     if (HPDF_SaveToStream(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(size = HPDF_GetStreamSize(pdf))) goto HPDF_Free;
     if (!(result = palloc(size + VARHDRSZ))) goto HPDF_Free;
     SET_VARSIZE(result, size + VARHDRSZ);
-    switch (HPDF_ReadFromStream(pdf, (HPDF_BYTE *)VARDATA(result), &size)) {
+    switch (HPDF_ReadFromStream(pdf, (HPDF_BYTE *)VARDATA_ANY(result), &size)) {
         case HPDF_OK: break;
         case HPDF_STREAM_EOF: break;
         default: goto HPDF_Free;
