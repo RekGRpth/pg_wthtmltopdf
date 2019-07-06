@@ -25,7 +25,6 @@ EXTENSION(html2pdf) {
     HPDF_Page page;
     HPDF_UINT32 size;
     text *result = NULL;
-    StringInfoData buf;
     if (PG_ARGISNULL(0)) ereport(ERROR, (errmsg("html is null!")));
     html = TextDatumGetCString(PG_GETARG_DATUM(0));
     if (!(pdf = HPDF_NewEx(error_handler, (HPDF_Alloc_Func)palloc, pfree, 0, NULL))) ereport(ERROR, (errmsg("!pdf")));
@@ -44,12 +43,10 @@ EXTENSION(html2pdf) {
         default: goto HPDF_Free;
     }
 HPDF_Free:
-//    elog(LOG, "size = %u", size);
+    elog(LOG, "size = %u", size);
     page = HPDF_GetCurrentPage(pdf);
     if (page) while (HPDF_Page_GetGStateDepth(page) > 1) HPDF_Page_GRestore(page);
     (void)HPDF_Free(pdf);
     (void)pfree(html);
-    pq_begintypsend(&buf);
-    pq_sendtext(&buf, VARDATA_ANY(result), VARSIZE_ANY_EXHDR(result));
-    PG_RETURN_BYTEA_P(pq_endtypsend(&buf));
+    PG_RETURN_TEXT_P(result);
 }
