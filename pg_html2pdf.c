@@ -46,5 +46,6 @@ HPDF_Free:
     if (page) while (HPDF_Page_GetGStateDepth(page) > 1) HPDF_Page_GRestore(page);
     (void)HPDF_Free(pdf);
     (void)pfree(html);
+    if (!result) PG_RETURN_NULL();
     PG_RETURN_TEXT_P(result);
 }
