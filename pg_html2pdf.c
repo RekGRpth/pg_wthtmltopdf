@@ -20,18 +20,19 @@ static void error(const char *msg) {
 }
 
 EXTENSION(html2pdf) {
-    text *html, *result = NULL;
+    char *html;
+    text *result = NULL;
     HPDF_Doc pdf;
     HPDF_Page page;
     HPDF_UINT32 size;
     if (PG_ARGISNULL(0)) ereport(ERROR, (errmsg("html is null!")));
-    html = PG_GETARG_TEXT_P(0);
+    html = TextDatumGetCString(PG_GETARG_DATUM(0));
     if (!(pdf = HPDF_NewEx(error_handler, (HPDF_Alloc_Func)palloc, pfree, 0, NULL))) ereport(ERROR, (errmsg("!pdf")));
     if (HPDF_SetCompressionMode(pdf, HPDF_COMP_ALL) != HPDF_OK) goto HPDF_Free;
     if (HPDF_UseUTFEncodings(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(page = HPDF_AddPage(pdf))) goto HPDF_Free;
     if (HPDF_Page_SetSize(page, HPDF_PAGE_SIZE_A4, HPDF_PAGE_PORTRAIT) != HPDF_OK) goto HPDF_Free;
-    if (!MyWPdfRenderer_render(error, pdf, page, VARDATA_ANY(html))) goto HPDF_Free;
+    if (!MyWPdfRenderer_render(error, pdf, page, html)) goto HPDF_Free;
     if (HPDF_SaveToStream(pdf) != HPDF_OK) goto HPDF_Free;
     if (!(size = HPDF_GetStreamSize(pdf))) goto HPDF_Free;
     if (!(result = palloc(size + VARHDRSZ))) goto HPDF_Free;
