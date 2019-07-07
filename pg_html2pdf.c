@@ -20,11 +20,10 @@ static void error(const char *msg) {
 }
 
 EXTENSION(html2pdf) {
-    text *html;
+    text *html, *result = NULL;
     HPDF_Doc pdf;
     HPDF_Page page;
     HPDF_UINT32 size;
-    text *result = NULL;
     if (PG_ARGISNULL(0)) ereport(ERROR, (errmsg("html is null!")));
     html = PG_GETARG_TEXT_P(0);
     if (!(pdf = HPDF_NewEx(error_handler, (HPDF_Alloc_Func)palloc, pfree, 0, NULL))) ereport(ERROR, (errmsg("!pdf")));
@@ -43,10 +42,9 @@ EXTENSION(html2pdf) {
         default: goto HPDF_Free;
     }
 HPDF_Free:
-//    elog(LOG, "size = %u", size);
     page = HPDF_GetCurrentPage(pdf);
     if (page) while (HPDF_Page_GetGStateDepth(page) > 1) HPDF_Page_GRestore(page);
     (void)HPDF_Free(pdf);
-//    (void)pfree(html);
+    (void)pfree(html);
     PG_RETURN_TEXT_P(result);
 }
