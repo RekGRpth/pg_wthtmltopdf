@@ -1,5 +1,5 @@
-#ifndef __MYWPDFRENDERER_HPP
-#define __MYWPDFRENDERER_HPP
+#ifndef __MYWPDFRENDERER_H
+#define __MYWPDFRENDERER_H
 
 #ifdef __cplusplus
 extern "C" {

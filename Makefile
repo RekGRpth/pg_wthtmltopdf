@@ -1,9 +1,9 @@
-EXTENSION = pg_html2pdf
+EXTENSION = pg_wthtmltopdf
 MODULE_big = $(EXTENSION)
 
 PG_CONFIG = pg_config
 OBJS = MyWPdfRenderer.o $(EXTENSION).o
-DATA = pg_html2pdf--1.0.sql
+DATA = pg_wthtmltopdf--1.0.sql
 
 LIBS += -lstdc++ -lwt
 SHLIB_LINK := $(LIBS)

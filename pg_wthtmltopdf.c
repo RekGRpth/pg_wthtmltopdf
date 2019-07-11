@@ -19,7 +19,7 @@ static void error(const char *msg) {
     ereport(ERROR, (errmsg("%s", msg)));
 }
 
-EXTENSION(html2pdf) {
+EXTENSION(wthtmltopdf) {
     char *html;
     text *result = NULL;
     HPDF_Doc pdf;
